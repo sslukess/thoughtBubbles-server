@@ -13,7 +13,7 @@ public class ThoughtBubblesController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet(Name = "GetAllBubbles")]
+    [HttpGet]
     public string Get()
     {
         return "a"; 
