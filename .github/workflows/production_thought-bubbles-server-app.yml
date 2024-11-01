@@ -31,7 +31,7 @@ jobs:
         run: dotnet tool install -g dotnet-ef --version 8.*
 
       - name: create migration
-        run: dotnet ef migrations bundle --runtime linux-x64 -o ${{env.DOTNET_ROOT}}/myapp/migrationsbundle --project ${{env.DOTNET_ROOT}}/thoughtBubbles-server/thoughtBubbles-server.csproj
+        run: dotnet ef migrations bundle --runtime linux-x64 -o ${{env.DOTNET_ROOT}}/myapp/migrationsbundle --project ./thoughtBubbles-server/thoughtBubbles-server.csproj
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
