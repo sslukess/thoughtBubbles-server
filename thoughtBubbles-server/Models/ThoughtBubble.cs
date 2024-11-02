@@ -6,5 +6,5 @@ public class ThoughtBubble
 {
     public int Id { get; set; }
     public string thought { get; set; } = "";
-    public string[]? topics = [];  
+    public List<string>? Topics { get; set; } = new List<string>();
 }
