@@ -43,9 +43,25 @@ public class ThoughtBubblesController : ControllerBase
 
 
     [HttpPost]
-    public IActionResult Create(ThoughtBubble newThoughtBubble)
+    public IActionResult Create(NoIdThoughtBubble newThoughtBubble)
     {
         var thoughtBubble = _service.Create(newThoughtBubble);
         return CreatedAtAction(nameof(GetById), new { id = thoughtBubble!.Id }, thoughtBubble);
+    }
+
+    [HttpPost("delete/{id}")]
+    public IActionResult Delete(int id)
+    {
+        ThoughtBubble? bubbleToDelete = _service.GetById(id);
+
+        if(bubbleToDelete is not null)
+        {
+            _service.DeleteById(id); 
+            return Ok(); 
+        }
+        else
+        {
+            return NotFound();
+        }
     }
 }

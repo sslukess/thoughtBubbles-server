@@ -12,4 +12,10 @@ public class ThoughtBubblesContext : DbContext
     }
 
     public DbSet<ThoughtBubble> ThoughtBubbles => Set<ThoughtBubble>(); 
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<ThoughtBubble>()
+            .HasKey(tb => tb.Id); // set ID as the key
+    }
 }
