@@ -5,6 +5,7 @@ var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 // Get allowed origins from environment:
 var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
+
 // Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -36,8 +37,6 @@ builder.Services.AddCors(options =>
                                             .AllowAnyMethod(); // Allow any method;
                       });
 });
-
-
 
 var app = builder.Build();
 
