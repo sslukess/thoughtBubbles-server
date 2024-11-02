@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using ThoughtBubbles.Services;
 
 namespace thoughtBubbles_server.Controllers;
 
