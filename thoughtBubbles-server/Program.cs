@@ -21,6 +21,8 @@ if (builder.Environment.IsDevelopment())
 }
 else
 {
+     var productionDatabase = builder.Configuration["PRODUCTION_DATABASE"]; // Get from config
+     Console.WriteLine(productionDatabase);
     builder.AddNpgsqlDbContext<ThoughtBubblesContext>("PRODUCTION_DATABASE");
 }
 
