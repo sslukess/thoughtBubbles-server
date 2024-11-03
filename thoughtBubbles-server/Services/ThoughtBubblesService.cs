@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ThoughtBubbles.Data;
-using ThoughtBubbles.Models; 
+using ThoughtBubbles.Models;
 
 namespace ThoughtBubbles.Services;
 public class ThoughtBubblesService
@@ -9,12 +9,12 @@ public class ThoughtBubblesService
     private readonly ThoughtBubblesContext _context;
     public ThoughtBubblesService(ThoughtBubblesContext context)
     {
-        _context = context; 
+        _context = context;
     }
 
     public IEnumerable<ThoughtBubble> GetAllBubbles()
     {
-        return _context.ThoughtBubbles.AsNoTracking().ToList(); 
+        return _context.ThoughtBubbles.AsNoTracking().ToList();
     }
 
     public ThoughtBubble? GetById(int id)
@@ -26,12 +26,30 @@ public class ThoughtBubblesService
         return fetchedThoughtBubble;
     }
 
-    public ThoughtBubble? Create(ThoughtBubble newThoughtBubble)
+    public ThoughtBubble? Create(NoIdThoughtBubble newNoIdThoughtBubble)
     {
-        _context.Add(newThoughtBubble);
+        var newThoughtBubble = new ThoughtBubble
+        {
+            Thought = newNoIdThoughtBubble.Thought,
+            Topics = newNoIdThoughtBubble.Topics
+            // The Id will be set automatically by the database
+        };
+
+        _context.ThoughtBubbles.Add(newThoughtBubble);
         _context.SaveChanges();
 
-        // Returning the bubble from the db, not just returning the argument newPizza
+        // Returning the bubble from the db, not just returning the argument newThoughtBubble
         return GetById(newThoughtBubble.Id);
+    }
+
+    public void DeleteById(int id)
+    {
+        ThoughtBubble? bubbleToDelete = _context.ThoughtBubbles.Find(id);
+
+        if (bubbleToDelete is not null)
+        {
+            _context.Remove(bubbleToDelete);
+            _context.SaveChanges();
+        }
     }
 }
