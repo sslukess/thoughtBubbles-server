@@ -21,9 +21,14 @@ if (builder.Environment.IsDevelopment())
 }
 else
 {
-     var productionDatabase = builder.Configuration["PRODUCTION_DATABASE"]; // Get from config
-     Console.WriteLine(productionDatabase);
-    builder.AddNpgsqlDbContext<ThoughtBubblesContext>("PRODUCTION_DATABASE");
+    var productionDatabaseURL = builder.Configuration.GetSection("DATABASE_URL").Get<string>() ?? "NULL_STRING";// Get from Railway config
+    
+    // use dummy value for the connection string, but the override it. 
+    // This is because AddNpgsqlDbContext wants to read a value from the appsettings.ConnectionStrings 
+    // during start up. 
+    // TODO build in null checks etc. 
+    builder.AddNpgsqlDbContext<ThoughtBubblesContext>("DUMMY_PRODUCTION_DATABASE",
+    o => o.ConnectionString = DatabaseConnectionHelper.ConvertDatabaseUrlToConnectionString(productionDatabaseURL));
 }
 
 builder.Services.AddScoped<ThoughtBubblesService>();
