@@ -17,23 +17,11 @@ builder.Services.AddSwaggerGen();
 if (builder.Environment.IsDevelopment())
 {
     // local dev database
-    builder.AddNpgsqlDbContext<ThoughtBubblesContext>("postgresdb");
+    builder.AddNpgsqlDbContext<ThoughtBubblesContext>("DEVELOPMENT_DATABASE");
 }
 else
 {
-    //production database
-    var productionDatabaseURL = builder.Configuration.GetSection("DATABASE_URL").Get<string>() ?? "NULL_STRING";
-
-    if (productionDatabaseURL is not "NULL_STRING")
-    {
-        var connectionString = DatabaseConnectionHelper.ConvertDatabaseUrlToConnectionString(productionDatabaseURL);
-        Console.WriteLine($"Attempting connection to production database with connection string: {connectionString}");
-        builder.AddNpgsqlDbContext<ThoughtBubblesContext>(connectionString);
-    }
-    else
-    {
-        throw new ArgumentNullException(nameof(productionDatabaseURL));
-    }
+    builder.AddNpgsqlDbContext<ThoughtBubblesContext>("PRODUCTION_DATABASE");
 }
 
 builder.Services.AddScoped<ThoughtBubblesService>();
