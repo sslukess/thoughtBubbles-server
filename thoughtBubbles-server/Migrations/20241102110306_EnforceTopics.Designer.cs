@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ThoughtBubbles.Data;
@@ -11,9 +12,11 @@ using ThoughtBubbles.Data;
 namespace thoughtBubbles_server.Migrations
 {
     [DbContext(typeof(ThoughtBubblesContext))]
-    partial class ThoughtBubblesContextModelSnapshot : ModelSnapshot
+    [Migration("20241102110306_EnforceTopics")]
+    partial class EnforceTopics
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,12 +33,12 @@ namespace thoughtBubbles_server.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Thought")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<List<string>>("Topics")
                         .HasColumnType("text[]");
+
+                    b.Property<string>("thought")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 

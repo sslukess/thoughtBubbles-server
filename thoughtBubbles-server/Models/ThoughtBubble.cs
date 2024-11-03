@@ -1,10 +1,13 @@
-using System.ComponentModel.DataAnnotations; 
+using System.ComponentModel.DataAnnotations;
 
-namespace ThoughtBubbles.Models; 
+namespace ThoughtBubbles.Models;
 
-public class ThoughtBubble
+public class NoIdThoughtBubble
+{
+    public string Thought { get; set; } = "";
+    public List<string>? Topics { get; set; } = new List<string>();
+}
+public class ThoughtBubble : NoIdThoughtBubble
 {
     public int Id { get; set; }
-    public string thought { get; set; } = "";
-    public string[]? topics; 
 }
