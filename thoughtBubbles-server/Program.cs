@@ -32,7 +32,7 @@ else
     // during start up. 
     // TODO build in null checks etc. 
     builder.AddNpgsqlDbContext<ThoughtBubblesContext>("DUMMY_PRODUCTION_DATABASE",
-    o => o.ConnectionString =  $"Host=${PGHOST};Port=${PGPORT};Database=${DBDATABASE};Username=${PGUSER};Password=${PGPASSWORD};");
+    o => o.ConnectionString =  $"Host={PGHOST};Port={PGPORT};Database={DBDATABASE};Username={PGUSER};Password={PGPASSWORD};");
 }
 
 builder.Services.AddScoped<ThoughtBubblesService>();
