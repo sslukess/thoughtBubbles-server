@@ -1,5 +1,6 @@
 using ThoughtBubbles.Data;
 using ThoughtBubbles.Services;
+using ThoughtBubbles.Helpers;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -21,7 +22,18 @@ if (builder.Environment.IsDevelopment())
 else
 {
     //production database
-    builder.AddNpgsqlDbContext<ThoughtBubblesContext>("AZURE_POSTGRESQL_CONNECTIONSTRING");
+    var productionDatabaseURL = builder.Configuration.GetSection("DATABASE_URL").Get<string>() ?? "NULL_STRING";
+
+    if (productionDatabaseURL is not "NULL_STRING")
+    {
+        var connectionString = DatabaseConnectionHelper.ConvertDatabaseUrlToConnectionString(productionDatabaseURL);
+        Console.WriteLine($"Attempting connection to production database with connection string: {connectionString}");
+        builder.AddNpgsqlDbContext<ThoughtBubblesContext>(connectionString);
+    }
+    else
+    {
+        throw new ArgumentNullException(nameof(productionDatabaseURL));
+    }
 }
 
 builder.Services.AddScoped<ThoughtBubblesService>();
