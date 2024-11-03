@@ -21,14 +21,18 @@ if (builder.Environment.IsDevelopment())
 }
 else
 {
-    var productionDatabaseURL = builder.Configuration.GetSection("DATABASE_URL").Get<string>() ?? "NULL_STRING";// Get from Railway config
+    var PGHOST = builder.Configuration.GetSection("PGHOST").Get<string>();// Get from Railway config
+    var PGPORT = builder.Configuration.GetSection("PGPORT").Get<string>();// Get from Railway config
+    var DBDATABASE = builder.Configuration.GetSection("DBDATABASE").Get<string>();// Get from Railway config
+    var PGUSER = builder.Configuration.GetSection("PGUSER").Get<string>();// Get from Railway config
+    var PGPASSWORD = builder.Configuration.GetSection("PGPASSWORD").Get<string>();// Get from Railway config
     
     // use dummy value for the connection string, but the override it. 
     // This is because AddNpgsqlDbContext wants to read a value from the appsettings.ConnectionStrings 
     // during start up. 
     // TODO build in null checks etc. 
     builder.AddNpgsqlDbContext<ThoughtBubblesContext>("DUMMY_PRODUCTION_DATABASE",
-    o => o.ConnectionString = DatabaseConnectionHelper.ConvertDatabaseUrlToConnectionString(productionDatabaseURL));
+    o => o.ConnectionString =  $"Host=${PGHOST};Port=${PGPORT};Database=${DBDATABASE};Username=${PGUSER};Password=${PGPASSWORD};");
 }
 
 builder.Services.AddScoped<ThoughtBubblesService>();
