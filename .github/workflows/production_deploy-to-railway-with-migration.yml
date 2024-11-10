@@ -34,13 +34,13 @@ jobs:
       - name: Install PostgreSQL Client
         run: sudo apt-get install -y postgresql-client
 
-      # - name: Create migration script 
-      #   run: dotnet ef migrations script --idempotent --output migration.sql --project thoughtBubbles-server
+      - name: Create migration script 
+        run: dotnet ef migrations script --idempotent --output migration.sql --project thoughtBubbles-server
 
       - name: Migrate Database
         run: |
           # Connect to Railway PostgreSQL instance using the environment variables
-          psql $PG_DATABASEURL -c 'SELECT version();'
+          psql $PG_DATABASEURL -f migration.sql
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
           PG_HOST: ${{ secrets.PG_HOST }}                     # Host for Railway DB (example)
