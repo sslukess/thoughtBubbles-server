@@ -1,0 +1,47 @@
+name: Deploy code to railway and run migration script
+
+on:
+  push:
+    branches:
+      # - production
+      - GitHub-Action-Testing
+  workflow_dispatch:  # Manually trigger the workflow from GitHub UI
+
+jobs: 
+  deploy: 
+    runs-on: ubuntu-latest
+
+    steps: 
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Show working dir
+        run: pwd
+             ls
+
+      - name: Set up .NET Core
+              uses: actions/setup-dotnet@v4
+              with:
+                dotnet-version: '9.x'
+      
+      - name: install EF core
+        run: dotnet tool install -g dotnet-ef --version 8.*
+
+      - name: create migration script 
+        run: dotnet ef migrations script --idempotent --output migration.sql
+
+      - name: Install Railway
+        run: npm i -g @railway/cli
+
+      - name: deploy app to railway 
+        run: railway up
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: migrate DB 
+        run: railway connect thoughtBubbles-db
+             \i migration.sql 
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+    
