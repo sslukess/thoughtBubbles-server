@@ -41,6 +41,7 @@ jobs:
 
       - name: Migrate Database 
         run: |
-          railway connect thoughtBubbles-db -f migration.sql
+          railway connect thoughtBubbles-db
+          psql SELECT version();
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
