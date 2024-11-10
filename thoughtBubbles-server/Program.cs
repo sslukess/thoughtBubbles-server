@@ -28,7 +28,7 @@ else
     var DBDATABASE = builder.Configuration["DBDATABASE"];// Get from Railway config
     var PGUSER = builder.Configuration["PGUSER"];// Get from Railway config
     var PGPASSWORD = builder.Configuration["PGPASSWORD"]; // Get from Railway config
-    
+
     // use dummy value for the connection string, but the override it. 
     // This is because AddNpgsqlDbContext wants to read a value from the appsettings.ConnectionStrings 
     // during start up. 
@@ -36,8 +36,14 @@ else
     // builder.AddNpgsqlDbContext<ThoughtBubblesContext>("DUMMY_PRODUCTION_DATABASE",
     // o => o.ConnectionString =  $"Host={PGHOST};Port={PGPORT};Database={DBDATABASE};Username={PGUSER};Password={PGPASSWORD};");
 
+    string databaseString = $"Host={PGHOST};Port={PGPORT};Database={DBDATABASE};Username={PGUSER};Password={PGPASSWORD};";
+    Console.WriteLine("!!!!!!!!!!!!!!!!!");
+    Console.WriteLine('connecting to database with string:');
+    Console.WriteLine(databaseString);
+    Console.WriteLine("!!!!!!!!!!!!!!!!!");
+
     builder.Services.AddDbContext<ThoughtBubblesContext>(options =>
-            options.UseNpgsql($"Host={PGHOST};Port={PGPORT};Database={DBDATABASE};Username={PGUSER};Password={PGPASSWORD};"));
+            options.UseNpgsql(databaseString);
 }
 
 builder.Services.AddScoped<ThoughtBubblesService>();
