@@ -23,11 +23,11 @@ if (builder.Environment.IsDevelopment())
 }
 else
 {
-    var PGHOST = builder.Configuration.GetSection("PGHOST").Get<string>();// Get from Railway config
-    var PGPORT = builder.Configuration.GetSection("PGPORT").Get<string>();// Get from Railway config
-    var DBDATABASE = builder.Configuration.GetSection("DBDATABASE").Get<string>();// Get from Railway config
-    var PGUSER = builder.Configuration.GetSection("PGUSER").Get<string>();// Get from Railway config
-    var PGPASSWORD = builder.Configuration.GetSection("PGPASSWORD").Get<string>();// Get from Railway config
+    var PGHOST = builder.Configuration["PGHOST"];// Get from Railway config
+    var PGPORT = builder.Configuration["PGPORT"];// Get from Railway config
+    var DBDATABASE = builder.Configuration["DBDATABASE"];// Get from Railway config
+    var PGUSER = builder.Configuration["PGUSER"];// Get from Railway config
+    var PGPASSWORD = builder.Configuration["PGPASSWORD"]; // Get from Railway config
     
     // use dummy value for the connection string, but the override it. 
     // This is because AddNpgsqlDbContext wants to read a value from the appsettings.ConnectionStrings 
