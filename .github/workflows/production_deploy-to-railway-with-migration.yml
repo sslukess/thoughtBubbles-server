@@ -37,12 +37,19 @@ jobs:
       # - name: Create migration script 
       #   run: dotnet ef migrations script --idempotent --output migration.sql --project thoughtBubbles-server
 
-      - name: Migrate Database 
+      - name: Migrate Database
         run: |
-          railway connect thoughtBubbles-db
-          SELECT version();
+          # Connect to Railway PostgreSQL instance using the environment variables
+          psql $PG_DATABASEURL -c 'SELECT version();'
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          PG_HOST: ${{ secrets.PG_HOST }}                     # Host for Railway DB (example)
+          PG_USER: ${{ secrets.PG_USER }}                       # Username for your PostgreSQL DB
+          PG_PASSWORD: ${{ secrets.PG_PASSWORD }}               # Password stored as a secret
+          PG_DB: ${{ secrets.PG_DATABASE }}                     # The name of your database
+          PG_PORT: ${{ secrets.PG_PORT }}                       # Default PostgreSQL port
+          PG_DATABASEURL: ${{ secrets.PG_PORT }}
+
 
       - name: Deploy app to Railway
         run: railway up --service thoughtBubbles-server
