@@ -34,6 +34,9 @@ jobs:
       - name: Install Railway CLI
         run: npm i -g @railway/cli
 
+      - name: Install PostgreSQL Client
+        run: sudo apt-get install -y postgresql-client
+
       - name: Deploy app to Railway
         run: railway up --service thoughtBubbles-server
         env:
