@@ -41,7 +41,6 @@ jobs:
 
       - name: Migrate Database 
         run: |
-          railway connect thoughtBubbles-db
-          \i migration.sql
+          railway connect thoughtBubbles-db -f migration.sql
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
