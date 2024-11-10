@@ -1,6 +1,6 @@
 using ThoughtBubbles.Data;
 using ThoughtBubbles.Services;
-using ThoughtBubbles.Helpers;
+using Microsoft.EntityFrameworkCore;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -17,22 +17,40 @@ builder.Services.AddSwaggerGen();
 if (builder.Environment.IsDevelopment())
 {
     // local dev database
-    builder.AddNpgsqlDbContext<ThoughtBubblesContext>("DEVELOPMENT_DATABASE");
+    // builder.AddNpgsqlDbContext<ThoughtBubblesContext>("DEVELOPMENT_DATABASE");
+
+    string databaseString = builder.Configuration.GetConnectionString("DEVELOPMENT_DATABASE") ?? "NOSTRING";
+    Console.WriteLine("!!!!!!!!!!!!!!!!!");
+    Console.WriteLine("connecting to database with string:");
+    Console.WriteLine(databaseString);
+    Console.WriteLine("!!!!!!!!!!!!!!!!!");
+
+    builder.Services.AddDbContext<ThoughtBubblesContext>(options =>
+            options.UseNpgsql(databaseString));
 }
 else
 {
-    var PGHOST = builder.Configuration.GetSection("PGHOST").Get<string>();// Get from Railway config
-    var PGPORT = builder.Configuration.GetSection("PGPORT").Get<string>();// Get from Railway config
-    var DBDATABASE = builder.Configuration.GetSection("DBDATABASE").Get<string>();// Get from Railway config
-    var PGUSER = builder.Configuration.GetSection("PGUSER").Get<string>();// Get from Railway config
-    var PGPASSWORD = builder.Configuration.GetSection("PGPASSWORD").Get<string>();// Get from Railway config
-    
+    var PGHOST = builder.Configuration["PGHOST"];// Get from Railway config
+    var PGPORT = builder.Configuration["PGPORT"];// Get from Railway config
+    var DBDATABASE = builder.Configuration["PGDATABASE"];// Get from Railway config
+    var PGUSER = builder.Configuration["PGUSER"];// Get from Railway config
+    var PGPASSWORD = builder.Configuration["PGPASSWORD"]; // Get from Railway config
+
     // use dummy value for the connection string, but the override it. 
     // This is because AddNpgsqlDbContext wants to read a value from the appsettings.ConnectionStrings 
     // during start up. 
     // TODO build in null checks etc. 
-    builder.AddNpgsqlDbContext<ThoughtBubblesContext>("DUMMY_PRODUCTION_DATABASE",
-    o => o.ConnectionString =  $"Host={PGHOST};Port={PGPORT};Database={DBDATABASE};Username={PGUSER};Password={PGPASSWORD};");
+    // builder.AddNpgsqlDbContext<ThoughtBubblesContext>("DUMMY_PRODUCTION_DATABASE",
+    // o => o.ConnectionString =  $"Host={PGHOST};Port={PGPORT};Database={DBDATABASE};Username={PGUSER};Password={PGPASSWORD};");
+
+    string databaseString = $"Host={PGHOST};Port={PGPORT};Database={DBDATABASE};Username={PGUSER};Password={PGPASSWORD};";
+    Console.WriteLine("!!!!!!!!!!!!!!!!!");
+    Console.WriteLine("connecting to database with string:");
+    Console.WriteLine(databaseString);
+    Console.WriteLine("!!!!!!!!!!!!!!!!!");
+
+    builder.Services.AddDbContext<ThoughtBubblesContext>(options =>
+            options.UseNpgsql(databaseString));
 }
 
 builder.Services.AddScoped<ThoughtBubblesService>();
