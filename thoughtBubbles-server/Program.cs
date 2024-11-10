@@ -38,12 +38,12 @@ else
 
     string databaseString = $"Host={PGHOST};Port={PGPORT};Database={DBDATABASE};Username={PGUSER};Password={PGPASSWORD};";
     Console.WriteLine("!!!!!!!!!!!!!!!!!");
-    Console.WriteLine('connecting to database with string:');
+    Console.WriteLine("connecting to database with string:");
     Console.WriteLine(databaseString);
     Console.WriteLine("!!!!!!!!!!!!!!!!!");
 
     builder.Services.AddDbContext<ThoughtBubblesContext>(options =>
-            options.UseNpgsql(databaseString);
+            options.UseNpgsql(databaseString));
 }
 
 builder.Services.AddScoped<ThoughtBubblesService>();
