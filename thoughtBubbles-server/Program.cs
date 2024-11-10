@@ -18,14 +18,21 @@ if (builder.Environment.IsDevelopment())
 {
     // local dev database
     // builder.AddNpgsqlDbContext<ThoughtBubblesContext>("DEVELOPMENT_DATABASE");
+
+    string databaseString = builder.Configuration.GetConnectionString("DEVELOPMENT_DATABASE") ?? "NOSTRING";
+    Console.WriteLine("!!!!!!!!!!!!!!!!!");
+    Console.WriteLine("connecting to database with string:");
+    Console.WriteLine(databaseString);
+    Console.WriteLine("!!!!!!!!!!!!!!!!!");
+
     builder.Services.AddDbContext<ThoughtBubblesContext>(options =>
-            options.UseNpgsql(builder.Configuration.GetConnectionString("DEVELOPMENT_DATABASE")));
+            options.UseNpgsql(databaseString));
 }
 else
 {
     var PGHOST = builder.Configuration["PGHOST"];// Get from Railway config
     var PGPORT = builder.Configuration["PGPORT"];// Get from Railway config
-    var DBDATABASE = builder.Configuration["DBDATABASE"];// Get from Railway config
+    var DBDATABASE = builder.Configuration["PGDATABASE"];// Get from Railway config
     var PGUSER = builder.Configuration["PGUSER"];// Get from Railway config
     var PGPASSWORD = builder.Configuration["PGPASSWORD"]; // Get from Railway config
 
