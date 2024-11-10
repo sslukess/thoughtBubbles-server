@@ -1,6 +1,6 @@
 using ThoughtBubbles.Data;
 using ThoughtBubbles.Services;
-using ThoughtBubbles.Helpers;
+using Microsoft.EntityFrameworkCore;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -17,7 +17,9 @@ builder.Services.AddSwaggerGen();
 if (builder.Environment.IsDevelopment())
 {
     // local dev database
-    builder.AddNpgsqlDbContext<ThoughtBubblesContext>("DEVELOPMENT_DATABASE");
+    // builder.AddNpgsqlDbContext<ThoughtBubblesContext>("DEVELOPMENT_DATABASE");
+    builder.Services.AddDbContext<ThoughtBubblesContext>(options =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString("DEVELOPMENT_DATABASE")));
 }
 else
 {
@@ -31,8 +33,11 @@ else
     // This is because AddNpgsqlDbContext wants to read a value from the appsettings.ConnectionStrings 
     // during start up. 
     // TODO build in null checks etc. 
-    builder.AddNpgsqlDbContext<ThoughtBubblesContext>("DUMMY_PRODUCTION_DATABASE",
-    o => o.ConnectionString =  $"Host={PGHOST};Port={PGPORT};Database={DBDATABASE};Username={PGUSER};Password={PGPASSWORD};");
+    // builder.AddNpgsqlDbContext<ThoughtBubblesContext>("DUMMY_PRODUCTION_DATABASE",
+    // o => o.ConnectionString =  $"Host={PGHOST};Port={PGPORT};Database={DBDATABASE};Username={PGUSER};Password={PGPASSWORD};");
+
+    builder.Services.AddDbContext<ThoughtBubblesContext>(options =>
+            options.UseNpgsql($"Host={PGHOST};Port={PGPORT};Database={DBDATABASE};Username={PGUSER};Password={PGPASSWORD};"));
 }
 
 builder.Services.AddScoped<ThoughtBubblesService>();
