@@ -12,36 +12,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps: 
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Show working dir
-        run: pwd
-             ls
+      - name: Show working directory
+        run: |
+          pwd
+          ls
 
       - name: Set up .NET Core
-              uses: actions/setup-dotnet@v4
-              with:
-                dotnet-version: '9.x'
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.x'
       
-      - name: install EF core
+      - name: Install EF Core
         run: dotnet tool install -g dotnet-ef --version 8.*
 
-      - name: create migration script 
+      - name: Create migration script 
         run: dotnet ef migrations script --idempotent --output migration.sql
 
-      - name: Install Railway
+      - name: Install Railway CLI
         run: npm i -g @railway/cli
 
-      - name: deploy app to railway 
+      - name: Deploy app to Railway
         run: railway up
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
 
-      - name: migrate DB 
-        run: railway connect thoughtBubbles-db
-             \i migration.sql 
+      - name: Migrate Database 
+        run: |
+          railway connect thoughtBubbles-db
+          \i migration.sql
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-
-    
