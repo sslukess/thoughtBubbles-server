@@ -5,6 +5,7 @@ on:
     branches:
       - production
       - GitHub-Action-Testing
+  workflow_dispatch:  # Manually trigger the workflow from GitHub UI
 
 jobs: 
   deploy: 
