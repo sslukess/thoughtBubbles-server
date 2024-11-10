@@ -3,7 +3,7 @@ name: Deploy code to railway and run migration script
 on:
   push:
     branches:
-      - production
+      # - production
       - GitHub-Action-Testing
   workflow_dispatch:  # Manually trigger the workflow from GitHub UI
 
