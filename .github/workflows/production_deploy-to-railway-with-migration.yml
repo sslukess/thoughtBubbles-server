@@ -28,23 +28,23 @@ jobs:
       - name: Install EF Core
         run: dotnet tool install -g dotnet-ef --version 8.*
 
-      - name: Create migration script 
-        run: dotnet ef migrations script --idempotent --output migration.sql --project thoughtBubbles-server
-
       - name: Install Railway CLI
         run: npm i -g @railway/cli
 
       - name: Install PostgreSQL Client
         run: sudo apt-get install -y postgresql-client
 
-      - name: Deploy app to Railway
-        run: railway up --service thoughtBubbles-server
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      # - name: Create migration script 
+      #   run: dotnet ef migrations script --idempotent --output migration.sql --project thoughtBubbles-server
 
       - name: Migrate Database 
         run: |
           railway connect thoughtBubbles-db
-          psql SELECT version();
+          SELECT version();
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: Deploy app to Railway
+        run: railway up --service thoughtBubbles-server
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
