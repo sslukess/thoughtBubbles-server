@@ -2,16 +2,16 @@ name: Deploy code to railway and run migration script
 
 on:
   push:
-    branches:
-      # - production
-      - GitHub-Action-Testing
-  workflow_dispatch:  # Manually trigger the workflow from GitHub UI
+    tags:
+      - "v*.*.*" # Trigger on tags that start with 'v' followed by semantic version (e.g., v1.2.3)
 
-jobs: 
-  deploy: 
+  workflow_dispatch: # Manually trigger the workflow from GitHub UI
+
+jobs:
+  deploy:
     runs-on: ubuntu-latest
 
-    steps: 
+    steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -23,8 +23,8 @@ jobs:
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.x'
-      
+          dotnet-version: "9.x"
+
       - name: Install EF Core
         run: dotnet tool install -g dotnet-ef --version 8.*
 
@@ -34,7 +34,7 @@ jobs:
       - name: Install PostgreSQL Client
         run: sudo apt-get install -y postgresql-client
 
-      - name: Create migration script 
+      - name: Create migration script
         run: dotnet ef migrations script --idempotent --output migration.sql --project thoughtBubbles-server
 
       - name: Migrate Database
