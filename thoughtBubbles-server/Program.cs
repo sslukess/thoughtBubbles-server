@@ -1,6 +1,8 @@
 using ThoughtBubbles.Data;
 using ThoughtBubbles.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using AspNetCore.Identity.Database;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -16,9 +18,9 @@ builder.Services.AddSwaggerGen();
 // Configure database connection: 
 if (builder.Environment.IsDevelopment())
 {
-    // local dev database
-    // builder.AddNpgsqlDbContext<ThoughtBubblesContext>("DEVELOPMENT_DATABASE");
+    // local dev databases
 
+    // Thought Bubbles
     string databaseString = builder.Configuration.GetConnectionString("DEVELOPMENT_DATABASE") ?? "NOSTRING";
     Console.WriteLine("!!!!!!!!!!!!!!!!!");
     Console.WriteLine("connecting to database with string:");
@@ -27,6 +29,17 @@ if (builder.Environment.IsDevelopment())
 
     builder.Services.AddDbContext<ThoughtBubblesContext>(options =>
             options.UseNpgsql(databaseString));
+
+    //Users
+    string databaseOfUsersString = builder.Configuration.GetConnectionString("DEVELOPMENT_USER_DATABASE") ?? "NOSTRING";
+    Console.WriteLine("!!!!!!!!!!!!!!!!!");
+    Console.WriteLine("connecting to database with string:");
+    Console.WriteLine(databaseOfUsersString);
+    Console.WriteLine("!!!!!!!!!!!!!!!!!");
+
+    builder.Services.AddDbContext<UsersDbContext>(options =>
+            options.UseNpgsql(databaseOfUsersString));
+
 }
 else
 {
@@ -51,6 +64,17 @@ else
 
     builder.Services.AddDbContext<ThoughtBubblesContext>(options =>
             options.UseNpgsql(databaseString));
+
+    //Users 
+    // TODO hook this up to prod env var
+    string databaseOfUsersString = builder.Configuration.GetConnectionString("DEVELOPMENT_USER_DATABASE") ?? "NOSTRING";
+    Console.WriteLine("!!!!!!!!!!!!!!!!!");
+    Console.WriteLine("connecting to database with string:");
+    Console.WriteLine(databaseOfUsersString);
+    Console.WriteLine("!!!!!!!!!!!!!!!!!");
+
+    builder.Services.AddDbContext<UsersDbContext>(options =>
+            options.UseNpgsql(databaseOfUsersString));
 }
 
 builder.Services.AddScoped<ThoughtBubblesService>();
@@ -66,6 +90,15 @@ builder.Services.AddCors(options =>
                                             .AllowAnyMethod(); // Allow any method;
                       });
 });
+
+// Authentication 
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication().AddCookie(IdentityConstants.ApplicationScheme);
+
+builder.Services.AddIdentityCore<User>()
+        .AddEntityFrameworkStores<UsersDbContext>()
+        .AddApiEndpoints();
+
 
 var app = builder.Build();
 
@@ -85,6 +118,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapIdentityApi<User>();
 
 // default for the base route
 app.MapGet("/", () => "Hello, you have reached the ThoughtBubbles API. Please continue inside for fun and/or games!");
